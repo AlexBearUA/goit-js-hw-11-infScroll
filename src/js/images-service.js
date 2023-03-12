@@ -10,7 +10,7 @@ export default class ImagesApiService {
     this.perPage = 40;
   }
 
-  async fetchImages(loadMoreBtn) {
+  async fetchImages() {
     const searchParams = new URLSearchParams({
       key: API_KEY,
       q: this.searchQuery,
@@ -51,7 +51,6 @@ export default class ImagesApiService {
     }
 
     if (this.perPage * this.page >= totalHits) {
-      loadMoreBtn.hide();
       Notify.info(
         "We're sorry, but you've reached the end of search results.",
         {
@@ -62,7 +61,6 @@ export default class ImagesApiService {
     }
 
     this.incrementPage();
-    loadMoreBtn.show();
     return images;
   }
 
