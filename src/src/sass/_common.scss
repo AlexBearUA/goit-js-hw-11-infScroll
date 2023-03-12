@@ -1,0 +1,135 @@
+@import '~node_modules/modern-normalize/modern-normalize.css';
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 20px;
+  padding: 60px 0 0 0;
+  margin: 0;
+  list-style: none;
+  max-width: calc(100vw - 80px);
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+}
+
+.photo-card {
+  position: relative;
+  height: 450px;
+  overflow: hidden;
+}
+
+.gallery img {
+  display: block;
+  width: 100%;
+  height: 450px;
+  object-fit: cover;
+}
+
+.info {
+  background-color: rgba($color: #62b8c4, $alpha: 0.8);
+  color: antiquewhite;
+  position: absolute;
+  display: flex;
+  gap: 20px;
+  padding: 5px 20px;
+  bottom: 0;
+  left: 0;
+}
+
+.search-form-wrapper {
+  height: 50px;
+  width: 100%;
+  padding: 10px 0;
+  background-color: rgba($color: #62b8c4, $alpha: 0.8);
+  position: fixed;
+  z-index: 1;
+}
+
+.search-form {
+  width: 300px;
+  margin: 0 auto;
+}
+
+.search-button {
+  border-radius: 5px;
+  background-color: #1cbcd1;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  color: antiquewhite;
+  &:hover {
+    background-color: #167581;
+  }
+}
+
+.search-form input {
+  height: 30px;
+  font-size: 15px;
+  border-radius: 5px;
+  border: none;
+  outline: 1px solid #167581;
+}
+
+.load-more-btn {
+  margin: 0 auto 50px;
+  display: flex;
+  border-radius: 5px;
+  background-color: #1cbcd1;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  color: antiquewhite;
+  &:hover {
+    background-color: #167581;
+  }
+}
+
+.spinner {
+  display: inline-block;
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+.spinner div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: 2px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #fff transparent transparent transparent;
+}
+.spinner div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.spinner div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.spinner div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.load-more-btn.is-hidden {
+  display: none;
+}
+
+.load-more-btn > .spinner.is-hidden {
+  display: none;
+}
+
+.notiflix-notify {
+  top: 50px;
+  left: 780px;
+}
