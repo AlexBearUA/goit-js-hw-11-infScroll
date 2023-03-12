@@ -1,5 +1,4 @@
 import ImagesApiService from './js/images-service';
-import LoadMoreBtn from './js/components/load-more-btn';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
@@ -11,11 +10,6 @@ const refs = {
 
 refs.searchBtn.disabled = true;
 
-const loadMoreBtn = new LoadMoreBtn({
-  selector: '[data-action="load-more"]',
-  hidden: true,
-});
-
 const imagesApiService = new ImagesApiService();
 
 const imagesGallery = new SimpleLightbox('.gallery a', {
@@ -25,7 +19,6 @@ const imagesGallery = new SimpleLightbox('.gallery a', {
 
 refs.searchForm.addEventListener('input', onFormInput);
 refs.searchForm.addEventListener('submit', onSearch);
-loadMoreBtn.refs.button.addEventListener('click', onAddImages);
 
 function onFormInput(e) {
   e.currentTarget.elements.searchQuery.value.trim() === ''
@@ -35,7 +28,6 @@ function onFormInput(e) {
 
 function onSearch(e) {
   e.preventDefault();
-  loadMoreBtn.hide();
   imagesApiService.query = e.currentTarget.elements.searchQuery.value.trim();
   imagesApiService.resetPage();
   clearImagesContainer();
@@ -43,9 +35,8 @@ function onSearch(e) {
 }
 
 function onAddImages() {
-  loadMoreBtn.disable();
   imagesApiService
-    .fetchImages(loadMoreBtn)
+    .fetchImages()
     .then(images => {
       appendImagesMarkup(images);
     })
@@ -60,9 +51,7 @@ function appendImagesMarkup(images) {
     'beforeend',
     createImagesMarkup(images)
   );
-  imagesApiService.page > 2 && scrollOnLoading();
   imagesGallery.refresh();
-  loadMoreBtn.enable();
 }
 
 function createImagesMarkup(images) {
@@ -107,15 +96,4 @@ function clearImagesContainer() {
 
 function onFetchError(error) {
   console.log(error);
-}
-
-function scrollOnLoading() {
-  const { height: cardHeight } = document
-    .querySelector('.gallery')
-    .firstElementChild.getBoundingClientRect();
-
-  window.scrollBy({
-    top: cardHeight * 1.75,
-    behavior: 'smooth',
-  });
 }
