@@ -34,10 +34,10 @@ function onSearch(e) {
   imagesApiService.resetPage();
   clearImagesContainer();
   observer.unobserve(refs.sentinel);
-  onAddImages().catch(onFetchError);
+  renderImages().catch(onFetchError);
 }
 
-async function onAddImages() {
+async function renderImages() {
   const data = await imagesApiService.fetchImages();
   const images = await responseHandler(data);
   if (!images) {
@@ -142,7 +142,7 @@ const onEntry = entries => {
       imagesApiService.query !== '' &&
       imagesApiService.page > 1
     ) {
-      onAddImages().catch(onFetchError);
+      renderImages().catch(onFetchError);
     }
   });
 };
