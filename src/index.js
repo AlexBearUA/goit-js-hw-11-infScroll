@@ -33,7 +33,6 @@ function onSearch(e) {
   imagesApiService.query = e.currentTarget.elements.searchQuery.value.trim();
   imagesApiService.resetPage();
   clearImagesContainer();
-  observer.unobserve(refs.sentinel);
   renderImages().catch(onFetchError);
 }
 
@@ -150,4 +149,3 @@ const onEntry = entries => {
 const observer = new IntersectionObserver(onEntry, {
   rootMargin: '350px',
 });
-observer.observe(refs.sentinel);
