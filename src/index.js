@@ -33,19 +33,16 @@ function onSearch(e) {
   imagesApiService.query = e.currentTarget.elements.searchQuery.value.trim();
   imagesApiService.resetPage();
   clearImagesContainer();
-  onAddImages();
+  onAddImages().catch(onFetchError);
 }
 
-function onAddImages() {
-  imagesApiService
-    .fetchImages()
-    .then(data => {
-      onFetchHandler(data);
-    })
-    .then(images => console.log(images))
-    .catch(onFetchError);
-
-  // appendImagesMarkup(images);
+async function onAddImages() {
+  const data = await imagesApiService.fetchImages();
+  const images = await onFetchHandler(data);
+  if (!images) {
+    return;
+  }
+  appendImagesMarkup(images);
 }
 
 function onFetchHandler({ hits: images, totalHits, total }) {
@@ -73,11 +70,11 @@ function onFetchHandler({ hits: images, totalHits, total }) {
         );
   }
 
-  if (imagesApiService.perPage * imagesApiService.page >= totalHits) {
+  if (imagesApiService.perPage * (imagesApiService.page - 1) >= totalHits) {
     Notify.info("We're sorry, but you've reached the end of search results.", {
       position: 'left-top',
     });
-
+    observer.unobserve(refs.sentinel);
     return images;
   }
   console.log(images);
@@ -85,9 +82,6 @@ function onFetchHandler({ hits: images, totalHits, total }) {
 }
 
 function appendImagesMarkup(images) {
-  if (!images) {
-    return;
-  }
   refs.imagesContainer.insertAdjacentHTML(
     'beforeend',
     createImagesMarkup(images)
@@ -139,20 +133,16 @@ function onFetchError(error) {
   console.log(error);
 }
 
-// function registrationObserver() {
-//   const onEntry = entries => {
-//     entries.forEach(entry => {
-//       if (entry.isIntersecting && imagesApiService.query !== '') {
-//         onAddImages();
-//         imagesApiService.incrementPage();
-//       }
-//     });
-//   };
+const onEntry = entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && imagesApiService.query !== '') {
+      onAddImages();
+      imagesApiService.incrementPage();
+    }
+  });
+};
 
-//   const observer = new IntersectionObserver(onEntry, {
-//     rootMargin: '350px',
-//   });
-//   observer.observe(refs.sentinel);
-// }
-
-// observer.unobserve(refs.sentinel);
+const observer = new IntersectionObserver(onEntry, {
+  rootMargin: '350px',
+});
+observer.observe(refs.sentinel);
