@@ -33,6 +33,7 @@ function onSearch(e) {
   imagesApiService.query = e.currentTarget.elements.searchQuery.value.trim();
   imagesApiService.resetPage();
   clearImagesContainer();
+  observer.unobserve(refs.sentinel);
   onAddImages().catch(onFetchError);
 }
 
@@ -46,6 +47,7 @@ async function onAddImages() {
 }
 
 function onFetchHandler({ hits: images, totalHits, total }) {
+  observer.observe(refs.sentinel);
   if (images.length === 0) {
     Notify.info(
       'Sorry, there are no images matching your search query. Please try again.',
@@ -75,9 +77,10 @@ function onFetchHandler({ hits: images, totalHits, total }) {
       position: 'left-top',
     });
     observer.unobserve(refs.sentinel);
+
     return images;
   }
-  console.log(images);
+
   return images;
 }
 
@@ -135,9 +138,12 @@ function onFetchError(error) {
 
 const onEntry = entries => {
   entries.forEach(entry => {
-    if (entry.isIntersecting && imagesApiService.query !== '') {
+    if (
+      entry.isIntersecting &&
+      imagesApiService.query !== '' &&
+      imagesApiService.page > 1
+    ) {
       onAddImages();
-      imagesApiService.incrementPage();
     }
   });
 };
