@@ -6,6 +6,7 @@ const refs = {
   searchForm: document.querySelector('#search-form'),
   imagesContainer: document.querySelector('.gallery'),
   searchBtn: document.querySelector('.search-button'),
+  sentinel: document.querySelector('#sentinel'),
 };
 
 refs.searchBtn.disabled = true;
@@ -19,7 +20,6 @@ const imagesGallery = new SimpleLightbox('.gallery a', {
 
 refs.searchForm.addEventListener('input', onFormInput);
 refs.searchForm.addEventListener('submit', onSearch);
-loadMoreBtn.refs.button.addEventListener('click', onAddImages);
 
 function onFormInput(e) {
   e.currentTarget.elements.searchQuery.value.trim() === ''
@@ -39,6 +39,17 @@ function onAddImages() {
   imagesApiService
     .fetchImages()
     .then(images => {
+      if (images.length === 0) {
+        Notify.info(
+          'Sorry, there are no images matching your search query. Please try again.',
+          {
+            position: 'left-top',
+          }
+        );
+        observer.unobserve(refs.sentinel);
+        return;
+      }
+
       appendImagesMarkup(images);
     })
     .catch(onFetchError);
@@ -90,6 +101,23 @@ function createImagesMarkup(images) {
     )
     .join('');
 }
+registerIntersectionObserver();
+
+function registerIntersectionObserver() {
+  const onEntry = entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && imagesApiService.query !== '') {
+        onAddImages();
+        imagesApiService.incrementPage();
+      }
+    });
+  };
+
+  const observer = new IntersectionObserver(onEntry, {
+    rootMargin: '350px',
+  });
+  observer.observe(refs.sentinel);
+}
 
 function clearImagesContainer() {
   refs.imagesContainer.innerHTML = '';
@@ -98,3 +126,5 @@ function clearImagesContainer() {
 function onFetchError(error) {
   console.log(error);
 }
+
+// observer.unobserve(refs.sentinel);

@@ -27,16 +27,6 @@ export default class ImagesApiService {
       data: { hits: images, totalHits, total },
     } = await axios.get(url);
 
-    if (images.length === 0) {
-      Notify.info(
-        'Sorry, there are no images matching your search query. Please try again.',
-        {
-          position: 'left-top',
-        }
-      );
-      return;
-    }
-
     if (this.page === 1) {
       total <= 500
         ? Notify.info(`Hooray! We found ${total} images!`, {
@@ -57,6 +47,7 @@ export default class ImagesApiService {
           position: 'left-top',
         }
       );
+
       return images;
     }
 
@@ -72,6 +63,9 @@ export default class ImagesApiService {
     this.page = 1;
   }
 
+  get query() {
+    return this.searchQuery;
+  }
   set query(newQuery) {
     this.searchQuery = newQuery;
   }
