@@ -39,17 +39,6 @@ function onAddImages() {
   imagesApiService
     .fetchImages()
     .then(images => {
-      if (images.length === 0) {
-        Notify.info(
-          'Sorry, there are no images matching your search query. Please try again.',
-          {
-            position: 'left-top',
-          }
-        );
-        observer.unobserve(refs.sentinel);
-        return;
-      }
-
       appendImagesMarkup(images);
     })
     .catch(onFetchError);
@@ -57,6 +46,7 @@ function onAddImages() {
 
 function appendImagesMarkup(images) {
   if (!images) {
+    observer.unobserve(entry.target);
     return;
   }
   refs.imagesContainer.insertAdjacentHTML(
@@ -102,6 +92,7 @@ function createImagesMarkup(images) {
     .join('');
 }
 registerIntersectionObserver();
+// observer.unobserve(refs.sentinel);
 
 function registerIntersectionObserver() {
   const onEntry = entries => {
@@ -126,5 +117,3 @@ function clearImagesContainer() {
 function onFetchError(error) {
   console.log(error);
 }
-
-// observer.unobserve(refs.sentinel);

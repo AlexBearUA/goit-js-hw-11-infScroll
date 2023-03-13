@@ -27,6 +27,17 @@ export default class ImagesApiService {
       data: { hits: images, totalHits, total },
     } = await axios.get(url);
 
+    if (images.length === 0) {
+      Notify.info(
+        'Sorry, there are no images matching your search query. Please try again.',
+        {
+          position: 'left-top',
+        }
+      );
+      observer.unobserve(refs.sentinel);
+      return;
+    }
+
     if (this.page === 1) {
       total <= 500
         ? Notify.info(`Hooray! We found ${total} images!`, {
