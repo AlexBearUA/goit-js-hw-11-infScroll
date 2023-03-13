@@ -54,7 +54,6 @@ function responseHandler({ hits: images, totalHits, total }) {
         position: 'left-top',
       }
     );
-
     return;
   }
 
@@ -78,7 +77,6 @@ function responseHandler({ hits: images, totalHits, total }) {
       position: 'left-top',
     });
     observer.unobserve(refs.sentinel);
-
     return images;
   }
 
