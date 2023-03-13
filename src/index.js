@@ -59,7 +59,7 @@ function onFetchHandler({ hits: images, totalHits, total }) {
 
     return;
   }
-  console.log(imagesApiService.page);
+
   if (imagesApiService.page === 2) {
     total <= 500
       ? Notify.info(`Hooray! We found ${total} images!`, {
