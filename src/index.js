@@ -39,15 +39,14 @@ function onSearch(e) {
 
 async function onAddImages() {
   const data = await imagesApiService.fetchImages();
-  const images = await onFetchHandler(data);
+  const images = await responseHandler(data);
   if (!images) {
     return;
   }
   appendImagesMarkup(images);
 }
 
-function onFetchHandler({ hits: images, totalHits, total }) {
-  observer.observe(refs.sentinel);
+function responseHandler({ hits: images, totalHits, total }) {
   if (images.length === 0) {
     Notify.info(
       'Sorry, there are no images matching your search query. Please try again.',
@@ -58,6 +57,8 @@ function onFetchHandler({ hits: images, totalHits, total }) {
 
     return;
   }
+
+  observer.observe(refs.sentinel);
 
   if (imagesApiService.page === 2) {
     total <= 500
@@ -143,7 +144,7 @@ const onEntry = entries => {
       imagesApiService.query !== '' &&
       imagesApiService.page > 1
     ) {
-      onAddImages();
+      onAddImages().catch(onFetchError);
     }
   });
 };
