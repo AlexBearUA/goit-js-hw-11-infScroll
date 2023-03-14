@@ -8,6 +8,7 @@ const refs = {
   imagesContainer: document.querySelector('.gallery'),
   searchBtn: document.querySelector('.search-button'),
   sentinel: document.querySelector('#sentinel'),
+  endOfTheCollectionMessage: document.querySelector('.the-end'),
 };
 
 refs.searchBtn.disabled = true;
@@ -30,6 +31,7 @@ function onFormInput(e) {
 
 function onSearch(e) {
   e.preventDefault();
+  refs.endOfTheCollectionMessage.classList.add('is-hidden');
   imagesApiService.query = e.currentTarget.elements.searchQuery.value.trim();
   imagesApiService.resetPage();
   clearImagesContainer();
@@ -72,9 +74,7 @@ function responseHandler({ hits: images, totalHits, total }) {
   }
 
   if (imagesApiService.perPage * (imagesApiService.page - 1) >= totalHits) {
-    Notify.info("We're sorry, but you've reached the end of search results.", {
-      position: 'left-top',
-    });
+    refs.endOfTheCollectionMessage.classList.remove('is-hidden');
     observer.unobserve(refs.sentinel);
     return images;
   }
