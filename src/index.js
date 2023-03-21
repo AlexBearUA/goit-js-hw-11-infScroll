@@ -40,7 +40,7 @@ function onSearch(e) {
 
 async function renderImages() {
   const data = await imagesApiService.fetchImages();
-  const images = await responseHandler(data);
+  const images = responseHandler(data);
   if (!images) {
     return;
   }
